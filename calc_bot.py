@@ -24,7 +24,7 @@ class MyClient(discord.Client):
 client = MyClient()
 
 @client.tree.command(name="calc", description="계산기 명령어")
-@app_commands.allowed_contexts(guild=True, dms=True, private_channels=True)
+@app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @app_commands.describe(expression="계산할 수식을 입력하세요")
 async def calc(interaction: discord.Interaction, expression: str):
     try:

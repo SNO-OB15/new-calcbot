@@ -88,4 +88,54 @@ async def 삭제(interaction: discord.Interaction, 입력: str):
     else:
         await interaction.response.send_message(f"`{입력}`에 해당하는 저장된 값이 없습니다.")
 
+symbols = ["🍒", "🍋", "🍇", "🍉", "🔔", "⭐", "7️⃣"]
+
+# 아스키 슬롯머신 생성 함수
+def build_slot_machine(left, center, right):
+    return (
+        "╔═══════════════════╗ ║\n"
+        "║  🎰 SLOT MACHINE  ║ ║\n"
+        "╟───────────────────╢ ║\n"
+        f"║   [{left}] [{center}] [{right}]   ║ 🎯\n"
+        "╚═══════════════════╝ ║\n"
+        "                      ╚═〠"
+    )
+
+class SlotView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="레버 당기기 🎯", style=discord.ButtonStyle.primary, custom_id="slot_pull")
+    async def pull_lever(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+
+        msg = await interaction.followup.send("🎰 레버를 당겼습니다! 슬롯머신이 회전 중...")
+
+        # 회전 애니메이션
+        for _ in range(10):
+            spin = [random.choice(symbols) for _ in range(3)]
+            content = build_slot_machine(*spin)
+            await msg.edit(content=content)
+            await asyncio.sleep(0.2)
+
+        # 최종 결과
+        result = [random.choice(symbols) for _ in range(3)]
+        content = build_slot_machine(*result)
+
+        if result[0] == result[1] == result[2]:
+            result_text = "\n💎 **JACKPOT! 전부 일치!** 💎"
+        elif result[0] == result[1] or result[1] == result[2] or result[0] == result[2]:
+            result_text = "\n✨ **2개 일치! 축하합니다!** ✨"
+        else:
+            result_text = "\n😢 꽝! 다음 기회에..."
+
+        await msg.edit(content=content + result_text)
+
+# /슬롯 명령어
+@bot.tree.command(name="슬롯", description="레버를 당겨 슬롯머신을 돌려보세요!")
+async def 슬롯(interaction: discord.Interaction):
+    view = SlotView()
+    await interaction.response.send_message("🎰 슬롯머신을 시작합니다! 레버를 당겨보세요!", view=view)
+
+
 bot.run(TOKEN)

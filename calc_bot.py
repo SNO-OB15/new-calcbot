@@ -50,7 +50,7 @@ async def 저장(interaction: discord.Interaction, 입력: str, 출력: str):
 async def 출력(interaction: discord.Interaction, 입력: str):
     user_id = str(interaction.user.id)
     if user_id in user_data and 입력 in user_data[user_id]:
-        await interaction.response.send_message(f"`{입력}`의 값: `{user_data[user_id][입력]}`")
+        await interaction.response.send_message(f"{user_data[user_id][입력]}")
     else:
         await interaction.response.send_message(f"`{입력}`에 해당하는 데이터가 없습니다.")
 

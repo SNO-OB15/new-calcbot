@@ -51,6 +51,7 @@ async def on_ready():
 
 # /저장 입력 키 출력 값
 @bot.tree.command(name="저장", description="입력 키와 출력 값을 저장합니다.")
+@app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @app_commands.describe(입력="저장할 키", 출력="불러올 때 보여줄 값")
 async def 저장(interaction: discord.Interaction, 입력: str, 출력: str):
     user_id = str(interaction.user.id)

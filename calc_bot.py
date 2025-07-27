@@ -3,12 +3,16 @@ from discord.ext import commands
 from discord import app_commands
 import os
 import json
+import asyncio
+import random
 from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 DATA_FILE = "user_data.json"
+GUILD_ID = 1388168041824784457  # 본인이 테스트할 서버 ID로 변경하세요
+DEVELOPER_ID = 919201997150900224  # 본인 Discord 사용자 ID로 변경하세요
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -31,10 +35,9 @@ def save_user_data(data):
 async def on_ready():
     print(f"봇 로그인됨: {bot.user}")
     try:
-        guild_id = 1388168041824784457  # 테스트할 디스코드 서버 ID로 바꿔주세요
-        guild = discord.Object(id=guild_id)
+        guild = discord.Object(id=GUILD_ID)
         synced = await bot.tree.sync(guild=guild)
-        print(f"길드 {guild_id}에 슬래시 명령어 {len(synced)}개 동기화 완료")
+        print(f"길드 {GUILD_ID}에 슬래시 명령어 {len(synced)}개 동기화 완료")
     except Exception as e:
         print(f"동기화 에러: {e}")
 
@@ -88,9 +91,9 @@ async def 삭제(interaction: discord.Interaction, 입력: str):
     else:
         await interaction.response.send_message(f"`{입력}`에 해당하는 저장된 값이 없습니다.")
 
+# 슬롯머신 아스키 아트 및 심볼 목록
 symbols = ["🍒", "🍋", "🍇", "🍉", "🔔", "⭐", "7️⃣"]
 
-# 아스키 슬롯머신 생성 함수
 def build_slot_machine(left, center, right):
     return (
         "╔═══════════════════╗ ║\n"
@@ -137,5 +140,16 @@ async def 슬롯(interaction: discord.Interaction):
     view = SlotView()
     await interaction.response.send_message("🎰 슬롯머신을 시작합니다! 레버를 당겨보세요!", view=view)
 
+# /리로드 명령어 (개발자만 사용 가능)
+@bot.tree.command(name="리로드", description="봇을 재시작합니다 (개발자용)")
+async def 리로드(interaction: discord.Interaction):
+    if interaction.user.id != DEVELOPER_ID:
+        await interaction.response.send_message("이 명령어를 사용할 권한이 없습니다.", ephemeral=True)
+        return
+    await interaction.response.send_message("봇을 재시작합니다...")
+
+    # 봇을 재시작하는 실제 코드는 OS, 실행환경에 따라 다릅니다.
+    # 아래는 단순히 봇을 종료하는 코드이며, 재시작은 외부에서 처리하세요.
+    await bot.close()
 
 bot.run(TOKEN)

@@ -17,7 +17,7 @@ DEVELOPER_ID = 919201997150900224  # 본인 Discord 사용자 ID로 변경하세
 intents = discord.Intents.default()
 intents.message_content = True
 
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="연봇아", intents=intents)
 
 # JSON 파일에서 데이터 불러오기
 def load_user_data():

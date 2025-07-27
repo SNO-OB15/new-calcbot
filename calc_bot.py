@@ -31,8 +31,10 @@ def save_user_data(data):
 async def on_ready():
     print(f"봇 로그인됨: {bot.user}")
     try:
-        await bot.tree.sync()
-        print("슬래시 커맨드 동기화 완료")
+        guild_id = 1388168041824784457  # 테스트할 디스코드 서버 ID로 바꿔주세요
+        guild = discord.Object(id=guild_id)
+        synced = await bot.tree.sync(guild=guild)
+        print(f"길드 {guild_id}에 슬래시 명령어 {len(synced)}개 동기화 완료")
     except Exception as e:
         print(f"동기화 에러: {e}")
 
